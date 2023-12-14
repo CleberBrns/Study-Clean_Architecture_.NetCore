@@ -25,6 +25,11 @@ namespace CleanArchMvc.Domain.Entities
             ValidateDomain(name);
         }
 
+        public void Update(string name)
+        {
+            ValidateDomain(name);
+        }
+
         private void ValidateDomain(string name)
         {
             DomainExceptionValidation.When(string.IsNullOrEmpty(name.Trim()), "Invalid name. Name is required.");
