@@ -136,6 +136,39 @@
                 .WithMessage("Invalid stock value.");
         }
 
+        [Theory(DisplayName = "Create Product With Empty or Null Image, returns Valid State")]
+        [InlineData("")]
+        [InlineData(null)]
+        public void CreateProduct_WithEmptyOrNullImage_ResultObjectValidState(string image)
+        {
+            Action action = () => new Product(
+                1,
+                "Product Name",
+                "Product Description",
+                9.99m,
+                99,
+                image);
+
+            action.Should()
+                .NotThrow<Validation.DomainExceptionValidation>();
+        }
+
+        [Theory(DisplayName = "Create Product With Empty or Null Image, DO NOT return NullReferenceException")]
+        [InlineData(null)]
+        public void CreateProduct_WithEmptyOrNullImage_DoNotReturnNullReferenceException(string image)
+        {
+            Action action = () => new Product(
+                1,
+                "Product Name",
+                "Product Description",
+                9.99m,
+                99,
+                image);
+
+            action.Should()
+                .NotThrow<NullReferenceException>();
+        }
+
         [Fact(DisplayName = "Create Product With Image Too Long")]
         public void CreateProduct_WithImageValueTooLong_DomainExceptionValidationDescription()
         {
