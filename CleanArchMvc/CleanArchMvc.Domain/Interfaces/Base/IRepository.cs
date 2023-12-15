@@ -6,6 +6,6 @@
         Task<T> GetByIdAsync(int id);
         Task<T> InsertAsync(T obj);
         Task<T> UpdateAsync(T obj);
-        Task DeleteAsync(T obj);
+        Task<T> DeleteAsync(T obj);
     }
 }
