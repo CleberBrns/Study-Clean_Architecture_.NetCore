@@ -30,6 +30,20 @@ namespace CleanArchMvc.WebUI
             app.UseRouting();
             app.UseAuthorization();
             app.MapRazorPages();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Products}/{action=Index}/{id?}"
+                );
+            });
+
             app.Run();
         }
     }
