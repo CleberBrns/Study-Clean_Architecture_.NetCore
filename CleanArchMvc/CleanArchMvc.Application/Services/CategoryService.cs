@@ -32,7 +32,9 @@ namespace CleanArchMvc.Application.Services
 
         public async Task AddAsync(CategoryDto categoryDto)
         {
-            var categoryEntity = _mapper.Map<Category>(categoryDto);
+            //To do; Find a way to use a specific object constructor
+            //var categoryEntity = _mapper.Map<Category>(categoryDto);
+            var categoryEntity = new Category(categoryDto.Name); 
             await _categoryRepository.InsertAsync(categoryEntity);
         }
 
