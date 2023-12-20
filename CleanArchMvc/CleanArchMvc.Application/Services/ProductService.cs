@@ -34,14 +34,6 @@ namespace CleanArchMvc.Application.Services
             return _mapper.Map<ProductDto>(result);
         }
 
-        public async Task<ProductDto> GetProductCategoryAsync(int idProduct)
-        {
-            var productQuery = new GetProductCategoryQuery(idProduct);
-
-            var result = await _mediator.Send(productQuery);
-            return _mapper.Map<ProductDto>(result);
-        }
-
         public async Task AddAsync(ProductDto productDto)
         {
             var productCommand = _mapper.Map<ProductCreateCommand>(productDto);
