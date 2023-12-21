@@ -1,13 +1,15 @@
 ﻿using CleanArchMvc.Application.Interfaces;
 using CleanArchMvc.Application.Mappings;
 using CleanArchMvc.Application.Services;
+using CleanArchMvc.Domain.Account;
 using CleanArchMvc.Domain.Interfaces;
 using CleanArchMvc.Infra.Data.Context;
 using CleanArchMvc.Infra.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
+using CleanArchMvc.Infra.Data.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace CleanArchMvc.Infra.IoC
 {
@@ -20,11 +22,22 @@ namespace CleanArchMvc.Infra.IoC
                 ), b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName))
             );
 
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+            services.ConfigureApplicationCookie(options =>
+                options.AccessDeniedPath = "/Account/Login");
+
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
 
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();
+
+            services.AddScoped<IAuthenticate, AuthenticateService>();
+            services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
+
             services.AddAutoMapper(typeof(DomainToDtoMappingProfile));
 
             var handlers = AppDomain.CurrentDomain.Load("CleanArchMvc.Application");
