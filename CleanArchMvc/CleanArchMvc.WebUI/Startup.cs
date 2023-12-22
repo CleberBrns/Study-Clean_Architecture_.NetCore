@@ -1,4 +1,5 @@
-﻿using CleanArchMvc.Infra.IoC;
+﻿using CleanArchMvc.Domain.Account;
+using CleanArchMvc.Infra.IoC;
 
 namespace CleanArchMvc.WebUI
 {
@@ -19,15 +20,26 @@ namespace CleanArchMvc.WebUI
         }
         public void Configure(WebApplication app)
         {
+            // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            else
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
             app.UseHttpsRedirection();
+
+            SeedUsersAndRoles(app);
+
             app.UseStaticFiles();
             app.UseRouting();
+
+            app.UseAuthentication();
             app.UseAuthorization();
             app.MapRazorPages();
 
@@ -45,6 +57,14 @@ namespace CleanArchMvc.WebUI
             });
 
             app.Run();
+        }
+
+        static void SeedUsersAndRoles(WebApplication app)
+        {
+            using var scope = app.Services.CreateScope();
+            var seedUserRoleInitial = scope.ServiceProvider.GetRequiredService<ISeedUserRoleInitial>();
+            seedUserRoleInitial.SeedRoles();
+            seedUserRoleInitial.SeedUsers();
         }
     }
 }
