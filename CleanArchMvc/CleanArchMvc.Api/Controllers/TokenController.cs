@@ -4,6 +4,7 @@ using CleanArchMvc.Domain.Account;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 
 namespace CleanArchMvc.Api.Controllers
@@ -21,6 +22,25 @@ namespace CleanArchMvc.Api.Controllers
             _configuration = configuration;
         }
 
+        [HttpPost("CreateUser")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Authorize]
+        public async Task<ActionResult> CreateUser([FromBody] LoginModel userInfo)
+        {
+            var result = await _authenticate.RegisterUser(userInfo.Email, userInfo.Password);
+
+            if (result)
+            {
+                return Ok($"User {userInfo.Email} was created successfully.");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Invalid Create User attempt.");
+                return BadRequest(ModelState);
+            }
+        }
+
+        [AllowAnonymous]
         [HttpPost("LoginUser")]
         public async Task<ActionResult<UserToken>> Login([FromBody] LoginModel userInfo)
         {
